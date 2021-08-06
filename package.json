@@ -1,0 +1,24 @@
+{
+  "name": "sushirts",
+  "version": "1.0.0",
+  "description": "SU shirt reservation app",
+  "private": true,
+  "author": "Ondřej Ondryáš",
+  "license": "MIT",
+  "dependencies": {
+    "jquery": "3.6.0",
+    "jquery-validation": "1.19.3",
+    "jquery-validation-unobtrusive": "3.2.12",
+    "bootstrap": "5.1.0",
+    "popper.js": "1.16.1",
+    "font-awesome": "4.7.0"
+  },
+  "devDependencies": {
+    "sass": "latest",
+    "gulp": "latest",
+    "gulp-sass": "latest",
+    "gulp-clean-css": "latest",
+    "gulp-uglify": "latest",
+    "gulp-rename": "latest"
+  }
+}
