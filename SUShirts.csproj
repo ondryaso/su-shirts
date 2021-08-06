@@ -20,7 +20,6 @@
         <Folder Include="wwwroot\css" />
         <Folder Include="wwwroot\fonts" />
         <Folder Include="wwwroot\images\shirts" />
-        <Folder Include="wwwroot\js" />
     </ItemGroup>
 
 </Project>

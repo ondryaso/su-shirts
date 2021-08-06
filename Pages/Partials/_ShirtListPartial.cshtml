@@ -1,8 +1,55 @@
+@using SUShirts.Data.Enums
 @model List<SUShirts.Business.Dto.ShirtDto>
 
-<ul>
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xxl-4 g-3 mb-4">
     @foreach (var dto in Model)
     {
-        <li>@dto.Name</li>
+        <div class="col">
+            <div class="card" id="item_@dto.Id">
+                <img src="@Url.Content($"~{dto.ImageUrl}")" alt="Fotka trička" class="card-img-top"/>
+                <div class="card-body">
+                    <h5 class="card-title">@dto.Name</h5>
+                    <div class="card-text">
+                        <div class="row align-items-start mt-2">
+                            <div class="col-auto col-form-label">
+                                <label for="variants_@dto.Id" class="form-label">Velikost:</label>
+                            </div>
+                            <div class="col">
+                                <select class="form-select variant-select" id="variants_@dto.Id">
+                                    @foreach (var variant in dto.Variants)
+                                    {
+                                        <option value="@variant.Id" data-price="@variant.Price" data-left="@variant.ItemsLeft">
+                                            @variant.Size.ToString()
+                                            @if (variant.Sex == SexVariant.Unisex)
+                                            {
+                                                @:(unisex)
+                                            }
+                                        </option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <hr class="mt-2">
+                        <div class="row align-items-baseline" data-sid="@dto.Id">
+                            <div class="col-auto">
+                                <h5 class="price-label">@dto.Variants[0].Price Kč</h5>
+                            </div>
+                            <div class="col">
+                                skladem <span class="left-label">@dto.Variants[0].ItemsLeft</span> ks
+                            </div>
+                            <div class="col-auto">
+                                <button class="btn btn-primary disabled minus-btn" data-sid="@dto.Id">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                                <button class="btn btn-primary plus-btn" data-sid="@dto.Id">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     }
-</ul>
+</div>

@@ -25,6 +25,7 @@ namespace SUShirts.Business.Facades
         {
             var shirts = await _dbContext.Shirts
                 .Include(s => s.Variants)
+                .OrderBy(s => s.Name)
                 .ToListAsync();
 
             var men = this.GetOffersFor(SexVariant.Man, shirts);
@@ -46,6 +47,7 @@ namespace SUShirts.Business.Facades
                     continue;
                 }
 
+                shirtDto.Variants.Sort((a, b) => (int) a.Size - (int) b.Size);
                 ret.Add(shirtDto);
             }
 

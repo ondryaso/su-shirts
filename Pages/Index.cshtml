@@ -1,8 +1,13 @@
 @page
 @model SUShirts.Pages.Index
 
-<h1 id="damska">Dámská</h1>
+<h2 id="damska">Dámská</h2>
 <partial name="Partials/_ShirtListPartial" model="Model.WomanShirts"/>
 
-<h1 id="panska">Pánská</h1>
+<h2 id="panska">Pánská</h2>
 <partial name="Partials/_ShirtListPartial" model="Model.ManShirts"/>
+
+@section Scripts
+{
+    <script src="~/js/shop.js"></script>
+}

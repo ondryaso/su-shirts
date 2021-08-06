@@ -12,7 +12,7 @@ namespace SUShirts.Business.Mapper
             this.CreateMap<ShirtVariant, ShirtVariantDto>();
             this.CreateMap<Shirt, ShirtDto>()
                 .ForMember(s => s.ImageUrl, options =>
-                    options.MapFrom(m => m.ImageUrl ?? ("/images/shirts/" + m.Id + ".jpg")));
+                    options.MapFrom(m => $"/images/shirts/{(m.ImageUrl ?? (m.Id + ".jpg"))}"));
         }
     }
 }
