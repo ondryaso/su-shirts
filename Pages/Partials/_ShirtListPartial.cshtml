@@ -1,0 +1,8 @@
+@model List<SUShirts.Business.Dto.ShirtDto>
+
+<ul>
+    @foreach (var dto in Model)
+    {
+        <li>@dto.Name</li>
+    }
+</ul>

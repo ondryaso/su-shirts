@@ -19,7 +19,7 @@ function processSass() {
         .src("./wwwroot/sass/**")
         .pipe(sass())
         .on("error", sass.logError)
-        .pipe(cssMinify())
+        //.pipe(cssMinify())
         .pipe(gulp.dest(cssDst));
 }
 
@@ -33,7 +33,9 @@ function processScripts() {
     return gulp
         .src(["./node_modules/jquery/dist/jquery.js",
             "./node_modules/jquery-validation/dist/jquery.validate.js",
-            "./node_modules/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.js"])
+            "./node_modules/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.js",
+            "./node_modules/@popperjs/core/dist/umd/popper.js",
+            "./node_modules/bootstrap/dist/js/bootstrap.js"])
         .pipe(gulp.dest(jsDst))
         .pipe(uglify())
         .pipe(rename({extname: ".min.js"}))

@@ -4,3 +4,4 @@ obj/
 node_modules/
 riderModule.iml
 /_ReSharper.Caches/
+App.db
