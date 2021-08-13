@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -44,7 +46,21 @@ namespace SUShirts
             services.AddScoped<ShopFacade>();
             services.AddScoped<ReservationsFacade>();
 
-            services.AddRazorPages()
+            services.AddAuthentication(options =>
+                {
+                    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+                })
+                .AddCookie()
+                .AddGoogle(options =>
+                {
+                    var configSection = _configuration.GetSection("Google");
+
+                    options.ClientId = configSection["ClientId"];
+                    options.ClientSecret = configSection["ClientSecret"];
+                });
+
+            services.AddRazorPages(options => { options.Conventions.AuthorizeFolder("/Admin"); })
                 .AddRazorRuntimeCompilation();
         }
 
@@ -62,6 +78,9 @@ namespace SUShirts
 
             app.UseRequestLocalization();
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapRazorPages(); });
         }
