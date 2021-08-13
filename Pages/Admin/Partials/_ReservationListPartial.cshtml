@@ -1,0 +1,46 @@
+@model List<SUShirts.Business.Dto.ReservationDto>
+
+@if (Model is null or {Count:0})
+{
+    <h4>Nic tady není.</h4>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Jméno</th>
+                <th scope="col">Vytvořeno</th>
+                <th scope="col">Celkem kusů</th>
+                <th scope="col">Cena celkem</th>
+                @if (Model[0].Handled)
+                {
+                    <th scope="col">
+                        Vyřízeno
+                    </th>
+                }
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.OrderByDescending(r => r.MadeOn))
+            {
+                <tr>
+                    <th>@item.Name</th>
+                    <td>@item.MadeOn.ToString("dd. MM. yyyy HH:mm")</td>
+                    <td>@item.Items.Select(i => i.Count).Sum()</td>
+                    <td>@item.Items.Select(i => i.Price * i.Count).Sum() Kč</td>
+                    @if (item.Handled)
+                    {
+                        <td>@item.HandledOn!.Value.ToString("dd. MM. yyyy HH:mm") (@item.HandledBy)</td>
+                    }
+                    <td>
+                        <a asp-page="ReservationDetail" asp-route-Id="@item.Id" class="btn btn-outline-primary">Detail</a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}

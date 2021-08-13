@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SUShirts.Configuration;
 using SUShirts.Data.Entities;
+using SUShirts.Data.Enums;
 
 namespace SUShirts.Business.Services
 {
@@ -169,7 +170,7 @@ namespace SUShirts.Business.Services
             {
                 total += item.Price * item.Count;
                 sb.Append(
-                    $"<li class=\"col-{item.ShirtVariant.Shirt.PrimaryColor.Id}\"> {item.ShirtVariant.Shirt.Name}, vel. {item.ShirtVariant.Size.ToString()}, {item.Count} ks – {item.Price * item.Count} Kč</li>");
+                    $"<li class=\"col-{item.ShirtVariant.Shirt.PrimaryColor.Id}\"> {item.ShirtVariant.Shirt.Name}, vel. {item.ShirtVariant.Size.ToString()}, {(item.ShirtVariant.Sex switch {SexVariant.Man => "pánské", SexVariant.Woman => "dámské", SexVariant.Unisex => "unisex"})}, {item.Count} ks – {item.Price * item.Count} Kč</li>");
             }
 
             var itemsString = sb.ToString();

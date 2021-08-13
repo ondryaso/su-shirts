@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -22,6 +23,15 @@ namespace SUShirts.Business.Facades
             _dbContext = dbContext;
             _mapper = mapper;
             _logger = logger;
+        }
+
+        public async Task<List<ReservationDto>> GetAll()
+        {
+            var query = _dbContext.Reservations
+                .Include(r => r.Items);
+
+            var dto = _mapper.ProjectTo<ReservationDto>(query);
+            return await dto.ToListAsync();
         }
 
         public async Task<ReservationDto> GetDetails(int id)
@@ -57,6 +67,51 @@ namespace SUShirts.Business.Facades
                 {
                     _logger.LogCritical("Data inconsistency: shirt variant {Id} has less than zero items in stock.",
                         reservationItem.ShirtVariantId);
+                }
+            }
+
+            reservation.Handled = true;
+            reservation.HandledBy = handledBy;
+            reservation.HandledOn = DateTime.Now;
+
+            try
+            {
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Cannot finish reservation {Id}.", reservationId);
+                return false;
+            }
+
+            return true;
+        }
+
+        public async Task<bool> Cancel(int reservationId, string handledBy)
+        {
+            var reservation = await _dbContext.Reservations
+                .Where(r => r.Id == reservationId)
+                .Include(r => r.Items)
+                .ThenInclude(ri => ri.ShirtVariant)
+                .FirstOrDefaultAsync();
+
+            if (reservation.Handled)
+            {
+                return false;
+            }
+
+            foreach (var reservationItem in reservation.Items)
+            {
+                reservationItem.ShirtVariant.ItemsLeft += reservationItem.Count;
+                reservationItem.Count = 0;
+
+                if (reservationItem.ShirtVariant.ItemsInStock < reservationItem.ShirtVariant.ItemsLeft)
+                {
+                    _logger.LogCritical(
+                        "Data inconsistency: shirt variant {Id} has less items in stock than items left for reservations.",
+                        reservationItem.ShirtVariantId);
+
+                    reservationItem.ShirtVariant.ItemsInStock = reservationItem.ShirtVariant.ItemsLeft;
                 }
             }
 

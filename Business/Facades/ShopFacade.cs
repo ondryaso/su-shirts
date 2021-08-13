@@ -7,6 +7,7 @@ using System.Net.Mail;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Web;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -152,9 +153,12 @@ namespace SUShirts.Business.Facades
             {
                 Name = model.Name,
                 Email = model.Email,
-                Note = (model.Note + (model.IsClubMember ? "\nRezervující je sympatizujícím členem SU." : "")).Trim(),
+                Note = HttpUtility.HtmlEncode(model.Note +
+                                              (model.IsClubMember ? "\nRezervující je sympatizujícím členem SU." : "")
+                                              .Trim()),
                 PhoneOrDiscordTag = model.PhoneOrDiscordTag,
-                Items = items
+                Items = items,
+                MadeOn = DateTime.Now
             };
 
             foreach (var reservationItem in items)

@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -57,7 +58,7 @@ namespace SUShirts.Pages.Admin
 
         public async Task<IActionResult> OnGetFinish()
         {
-            var result = await _facade.MarkHandled(this.Id, "Test");
+            var result = await _facade.MarkHandled(this.Id, this.UserIdentifier);
             if (!result)
             {
                 this.ErrorMessage = "Při ukládání se vyskytla chyba. Zkus to znovu.";
@@ -65,5 +66,19 @@ namespace SUShirts.Pages.Admin
 
             return this.RedirectToPage();
         }
+
+        public async Task<IActionResult> OnGetCancel()
+        {
+            var result = await _facade.Cancel(this.Id, this.UserIdentifier);
+            if (!result)
+            {
+                this.ErrorMessage = "Při ukládání se vyskytla chyba. Zkus to znovu.";
+            }
+
+            return this.RedirectToPage();
+        }
+
+        private string UserIdentifier => this.User.FindFirstValue(ClaimTypes.Name)
+                                         ?? this.User.FindFirstValue(ClaimTypes.Email);
     }
 }

@@ -91,5 +91,11 @@
 @if (!Model.Reservation.Handled)
 {
     <a asp-page-handler="Finish" class="btn btn-primary">Označit jako vyřízenou</a>
-    <div class="form-text">Označením za vyřízenou stvrzuji, že jsem přebral peníze a vydal jsem trička (případně že peníze došly na účet a domluvil jsem se na jeho předání).</div>
+    <a asp-page-handler="Cancel" class="btn btn-outline-danger">Zrušit</a>
+
+    <div class="form-text">
+        Označením za vyřízenou stvrzuji, že jsem přebral peníze a vydal jsem trička (případně že peníze došly na účet a domluvil jsem se na jeho předání).
+    </div>
 }
+
+<a asp-page="Reservations" class="d-block mt-2">Zpět na rezervace</a>

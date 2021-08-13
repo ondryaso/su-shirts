@@ -6,12 +6,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AutoMapper" Version="10.1.1"/>
-        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1"/>
+        <PackageReference Include="AutoMapper" Version="10.1.1" />
+        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
 
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="5.0.8"/>
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.8"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.8"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="5.0.8" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.8" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.8" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.8">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
@@ -19,9 +19,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="wwwroot\css"/>
-        <Folder Include="wwwroot\fonts"/>
-        <Folder Include="wwwroot\images\shirts"/>
+        <Folder Include="wwwroot\css" />
+        <Folder Include="wwwroot\fonts" />
+        <Folder Include="wwwroot\images\shirts" />
     </ItemGroup>
 
 </Project>
