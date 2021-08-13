@@ -8,8 +8,8 @@ using SUShirts.Data;
 namespace SUShirts.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210806193227_ImageUrl")]
-    partial class ImageUrl
+    [Migration("20210809212712_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -133,6 +133,7 @@ namespace SUShirts.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("ItemsLeft")
+                        .IsConcurrencyToken()
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Price")
@@ -151,7 +152,7 @@ namespace SUShirts.Migrations
 
                     b.HasIndex("ShirtId");
 
-                    b.ToTable("ShirtVariant");
+                    b.ToTable("ShirtVariants");
                 });
 
             modelBuilder.Entity("SUShirts.Data.Entities.ReservationItem", b =>

@@ -1,67 +1,109 @@
-function updateVariant(variantId, itemId, delta) {
-    let storageItem = localStorage.getItem(variantId);
+function setCookie() {
+    let contents = JSON.stringify(localStorage);
+    contents = encodeURIComponent(contents);
+    document.cookie = "cart=" + contents;
+}
+
+function updateCart() {
+    let total = 0;
+
+    $.each(localStorage, function (key, value) {
+        if (!isNaN(key) && !isNaN(value)) {
+            total += Number(value);
+        }
+    });
+
+    $("#cart-text").text(total);
+    if (total > 0) {
+        $("#cart-btn").removeClass("disabled");
+    } else {
+        $("#cart-btn").addClass("disabled");
+    }
+
+    return total;
+}
+
+function updateItem(item, delta) {
+    const itemId = item.data("sid");
+    const currentItemVariantId = item.find(".variant-select").val();
+
+    let storageItem = localStorage.getItem(currentItemVariantId);
     let currentValue = 0;
 
     if (storageItem) {
         currentValue = Number(storageItem) + delta;
         if (currentValue === 0) {
-            localStorage.removeItem(variantId);
+            localStorage.removeItem(currentItemVariantId);
         } else {
-            localStorage.setItem(variantId, currentValue);
+            localStorage.setItem(currentItemVariantId, currentValue);
         }
     } else {
         if (delta > 0) {
             currentValue = delta;
-            localStorage.setItem(variantId, currentValue);
+            localStorage.setItem(currentItemVariantId, currentValue);
         }
     }
 
-    const item = $("#item_" + itemId);
-    const selectedOption = $("#variants_" + itemId).find(":selected");
-    let left = selectedOption.data("left");
-    left = left - delta;
-    selectedOption.data("left", left);
+    const variantSelector = $(".variant-select[data-sid='" + itemId + "']");
 
-    if (currentValue === 0) {
-        item.find(".minus-btn").addClass("disabled");
-    } else {
-        item.find(".minus-btn").removeClass("disabled");
-    }
+    variantSelector.each(function () {
+        const selectedOption = $(this).find(":selected");
 
-    if (left === 0) {
-        item.find(".plus-btn").addClass("disabled");
-    } else {
-        item.find(".plus-btn").removeClass("disabled");
-    }
+        if ($(this).val() === currentItemVariantId) {
+            let left = selectedOption.data("left");
+            left = left - currentValue;
 
-    updateItem(itemId);
-}
+            const thisItem = $(this).closest(".shirt-item");
 
-function updateItem(itemId) {
-    const item = $("#item_" + itemId);
-    
-    const selectedOption = $("#variants_" + itemId).find(":selected");
-    const price = selectedOption.data("price");
-    const left = selectedOption.data("left");
+            if (currentValue === 0) {
+                thisItem.find(".minus-btn").addClass("disabled");
+            } else {
+                thisItem.find(".minus-btn").removeClass("disabled");
+            }
 
-    item.find(".price-label").text(price + " Kč");
-    item.find(".left-label").text(left);
-}
+            if (left === 0) {
+                thisItem.find(".plus-btn").addClass("disabled");
+            } else {
+                thisItem.find(".plus-btn").removeClass("disabled");
+            }
 
-function getCurrentVariant(itemId) {
-    return $("#variants_" + itemId).val();
+            const price = selectedOption.data("price");
+
+            thisItem.find(".price-label").text(price + " Kč");
+            thisItem.find(".left-label").text(left);
+            thisItem.find(".items-counter").text(currentValue);
+        }
+    });
+
+    updateCart();
 }
 
 $(function () {
     $(".minus-btn").on("click", function () {
-        const itemId = $(this).data("sid");
-        const variantId = getCurrentVariant(itemId);
-        updateVariant(variantId, itemId, -1);
+        const item = $(this).closest(".shirt-item");
+        updateItem(item, -1);
     });
 
     $(".plus-btn").on("click", function () {
-        const itemId = $(this).data("sid");
-        const variantId = getCurrentVariant(itemId);
-        updateVariant(variantId, itemId, 1);
+        const item = $(this).closest(".shirt-item");
+        updateItem(item, 1);
+    });
+
+    $(".variant-select").on("change", function () {
+        const item = $(this).closest(".shirt-item");
+        updateItem(item, 0);
+    });
+
+    $(".shirt-item").each(function () {
+        const item = $(this);
+        updateItem(item, null);
+    });
+
+    $("#cart-btn").on("click", function () {
+        const items = updateCart();
+        if (items > 0) {
+            setCookie();
+            window.location.href = makeReservationUrl;
+        }
     });
 });

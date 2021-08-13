@@ -131,6 +131,7 @@ namespace SUShirts.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("ItemsLeft")
+                        .IsConcurrencyToken()
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Price")
@@ -149,7 +150,7 @@ namespace SUShirts.Migrations
 
                     b.HasIndex("ShirtId");
 
-                    b.ToTable("ShirtVariant");
+                    b.ToTable("ShirtVariants");
                 });
 
             modelBuilder.Entity("SUShirts.Data.Entities.ReservationItem", b =>

@@ -1,0 +1,79 @@
+@page
+@model SUShirts.Pages.MakeReservation
+
+<h2>Zarezervovat trička</h2>
+
+<table class="table mb-4">
+    <thead>
+    <tr>
+        <th scope="col">Název</th>
+        <th scope="col">Velikost</th>
+        <th scope="col">Cena</th>
+        <th scope="col">Požadovaných kusů</th>
+        <th scope="col">Kusů skladem</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.Items)
+    {
+        <tr class="@(item.WillBeRequested ? "" : "table-danger")">
+            <th scope="row">@item.ShirtName</th>
+            <td>@item.Size.ToString()</td>
+            <td>@item.Price Kč</td>
+            <td>
+                @item.RequestedCount
+                @if (!item.WillBeRequested)
+                {
+                    <i class="fa fa-warning" title="Této položky je skladem menší množství kusů, nebude zahrnuta do rezervace!" data-bs-toggle="tooltip"></i>
+                }
+            </td>
+            <td>@item.ItemsLeft</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<h4>Rezervační formulář</h4>
+<div class="col-md-6 mt-2">
+    <form method="post">
+        <div class="mb-3">
+            <label asp-for="Reservation.Email" class="form-label">E-mail</label>
+            <input type="email" class="form-control" asp-for="Reservation.Email" autocomplete="email">
+            <span asp-validation-for="Reservation.Email" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Reservation.Name" class="form-label">Jméno</label>
+            <input type="text" class="form-control" asp-for="Reservation.Name" autocomplete="name">
+            <span asp-validation-for="Reservation.Name" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Reservation.PhoneOrDiscordTag" class="form-label">Telefon nebo Discord tag</label>
+            <input type="text" class="form-control" asp-for="Reservation.PhoneOrDiscordTag" autocomplete="tel">
+            <span asp-validation-for="Reservation.PhoneOrDiscordTag" class="text-danger"></span>
+        </div>
+        <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" asp-for="Reservation.IsClubMember">
+            <label class="form-check-label" asp-for="Reservation.IsClubMember">Jsem zaregistrovaný v Kachně</label>
+            <div class="form-text">(jsem sympatizujícím nebo jiným členem SU)</div>
+
+        </div>
+        <div class="mb-3">
+            <label asp-for="Reservation.Note" class="form-label">Poznámka</label>
+            <textarea class="form-control" asp-for="Reservation.Note"></textarea>
+            <span asp-validation-for="Reservation.Note" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Odeslat rezervaci</button>
+    </form>
+</div>
+
+@section Scripts
+{
+    <script>
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+          return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+    <script src="~/js/jquery.validate.min.js" asp-append-version="true"></script>
+    <script src="~/js/jquery.validate.unobtrusive.min.js" asp-append-version="true"></script>
+}

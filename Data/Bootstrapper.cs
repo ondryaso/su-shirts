@@ -22,8 +22,8 @@ namespace SUShirts.Data
 
             var colorHexes = new[]
             {
-                "000000", "000000", "000000", "000000", "000000", "000000", "000000", "000000", "000000",
-                "000000", "000000", "000000", "000000"
+                "729ab3", "1a2875", "f06723", "e14a21", "525252", "00ff00", "ffffff", "000000", "fdc942",
+                "000000", "c9112b", "893e99", "000000"
             };
 
             var colors = new List<Color>();
@@ -174,7 +174,7 @@ namespace SUShirts.Data
                         {
                             Sex = SexVariant.Woman,
                             Size = SizeVariant.M,
-                            ItemsLeft = 7
+                            ItemsLeft = 6
                         },
                         new()
                         {
@@ -342,6 +342,14 @@ namespace SUShirts.Data
                 },
             };
 
+            foreach (var shirt in shirts)
+            {
+                foreach (var shirtVariant in shirt.Variants)
+                {
+                    shirtVariant.Price = 200;
+                }
+            }
+            
             dbContext.Colors.AddRange(colors);
             dbContext.Shirts.AddRange(shirts);
             dbContext.SaveChanges();

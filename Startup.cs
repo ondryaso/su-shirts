@@ -1,28 +1,46 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SUShirts.Business.Facades;
 using SUShirts.Business.Mapper;
+using SUShirts.Business.Services;
+using SUShirts.Configuration;
 using SUShirts.Data;
 
 namespace SUShirts
 {
     public class Startup
     {
+        private readonly IConfiguration _configuration;
+
+        public Startup(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlite("Data Source=App.db;Cache=Shared"));
 
+            services.Configure<MessageOptions>(_configuration.GetSection("Messages"));
+
             services.AddAutoMapper(typeof(MapperProfile));
 
+            services.AddHttpClient();
+            services.AddHttpContextAccessor();
+
+            services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<ShopFacade>();
 
             services.AddRazorPages()
@@ -40,6 +58,8 @@ namespace SUShirts
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            app.UseRequestLocalization();
             app.UseRouting();
 
             app.UseEndpoints(endpoints => { endpoints.MapRazorPages(); });

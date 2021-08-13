@@ -47,7 +47,8 @@ namespace SUShirts.Migrations
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     PrimaryColorId = table.Column<int>(type: "INTEGER", nullable: false),
                     SecondaryColorId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Hidden = table.Column<bool>(type: "INTEGER", nullable: false)
+                    Hidden = table.Column<bool>(type: "INTEGER", nullable: false),
+                    ImageUrl = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -67,7 +68,7 @@ namespace SUShirts.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ShirtVariant",
+                name: "ShirtVariants",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
@@ -80,9 +81,9 @@ namespace SUShirts.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ShirtVariant", x => x.Id);
+                    table.PrimaryKey("PK_ShirtVariants", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ShirtVariant_Shirts_ShirtId",
+                        name: "FK_ShirtVariants_Shirts_ShirtId",
                         column: x => x.ShirtId,
                         principalTable: "Shirts",
                         principalColumn: "Id",
@@ -108,9 +109,9 @@ namespace SUShirts.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_ReservationItem_ShirtVariant_ShirtVariantId",
+                        name: "FK_ReservationItem_ShirtVariants_ShirtVariantId",
                         column: x => x.ShirtVariantId,
-                        principalTable: "ShirtVariant",
+                        principalTable: "ShirtVariants",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -131,8 +132,8 @@ namespace SUShirts.Migrations
                 column: "SecondaryColorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ShirtVariant_ShirtId",
-                table: "ShirtVariant",
+                name: "IX_ShirtVariants_ShirtId",
+                table: "ShirtVariants",
                 column: "ShirtId");
         }
 
@@ -145,7 +146,7 @@ namespace SUShirts.Migrations
                 name: "Reservations");
 
             migrationBuilder.DropTable(
-                name: "ShirtVariant");
+                name: "ShirtVariants");
 
             migrationBuilder.DropTable(
                 name: "Shirts");

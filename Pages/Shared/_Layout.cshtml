@@ -22,19 +22,22 @@
 
         <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
             <li>
-                <a href="#damska" class="nav-link link-dark">Dámská trička</a>
+                <a href="/#damska" class="nav-link">Dámská trička</a>
             </li>
             <li>
-                <a href="#panska" class="nav-link  link-dark">Pánská trička</a>
+                <a href="/#panska" class="nav-link">Pánská trička</a>
             </li>
             <li>
         </ul>
 
-        <div class="col-md-3 text-end">
-            <button type="button" class="btn btn-primary text-white">
-                <i class="fa fa-shopping-cart me-2"></i>0
-            </button>
-        </div>
+        @if (true.Equals(ViewData["ShowCart"]))
+        {
+            <div class="col-md-3 text-end">
+                <button type="button" class="btn btn-primary text-white" id="cart-btn">
+                    <i class="fa fa-shopping-cart me-2"></i><span id="cart-text">0</span>
+                </button>
+            </div>
+        }
     </header>
 </div>
 

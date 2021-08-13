@@ -1,0 +1,43 @@
+@page "{state?}"
+@model SUShirts.Pages.ReservationResult
+
+@switch (Model.Result)
+{
+    case ReservationResult.ResultVariant.Ok:
+        <h2>Zarezervováno</h2>
+        <p>
+            Tvá trička byla úspěšně zarezervována. Nyní prosím počkej, kontaktuje tě někdo z SU a domluvíte se na předání.
+        </p>
+        break;
+    case ReservationResult.ResultVariant.Error:
+        <h2>Chyba</h2>
+        <pre>
+IDS/2020L: 49 b -> 49 b, zap 2021-05-13, 4F @DateTime.Today.ToString("yyyy-MM-dd")</pre>
+        <p>
+            Při rezervování nastala chyba. Zkus to znovu.
+        </p>
+        break;
+    case ReservationResult.ResultVariant.MissingItems:
+        <h2>Zarezervováno</h2>
+        <p>
+            Tvá trička byla úspěšně zarezervována.
+            Pozor, některé předměty z rezervace ti někdo stihl vyfouknout.<br>
+            Nyní prosím počkej, kontaktuje tě někdo z SU a domluvíte se na předání.
+        </p>
+        break;
+    case ReservationResult.ResultVariant.BadRequest:
+        <h2>Ani to nezkoušej</h2>
+        break;
+    default:
+        throw new ArgumentOutOfRangeException();
+}
+
+@section Scripts
+{
+    @if (Model.Result is ReservationResult.ResultVariant.Ok or ReservationResult.ResultVariant.MissingItems)
+    {
+        <script>
+            localStorage.clear();
+        </script>
+    }
+}

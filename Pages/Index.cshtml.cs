@@ -1,11 +1,9 @@
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using SUShirts.Business.Dto;
 using SUShirts.Business.Facades;
 using SUShirts.Data.Enums;
+using SUShirts.Models;
 
 namespace SUShirts.Pages
 {
@@ -13,8 +11,8 @@ namespace SUShirts.Pages
     {
         private readonly ShopFacade _facade;
 
-        public List<ShirtDto> ManShirts { get; set; }
-        public List<ShirtDto> WomanShirts { get; set; }
+        public ShirtListModel ManShirts { get; set; }
+        public ShirtListModel WomanShirts { get; set; }
 
         public Index(ShopFacade facade)
         {
@@ -23,10 +21,12 @@ namespace SUShirts.Pages
 
         public async Task<IActionResult> OnGet()
         {
+            this.ViewData["ShowCart"] = true;
+            
             var (men, women) = await _facade.GetOffers();
 
-            this.ManShirts = men;
-            this.WomanShirts = women;
+            this.ManShirts = new ShirtListModel() {Shirts = men, Sex = SexVariant.Man};
+            this.WomanShirts = new ShirtListModel() {Shirts = women, Sex = SexVariant.Woman};
 
             return this.Page();
         }

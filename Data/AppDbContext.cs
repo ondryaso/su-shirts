@@ -8,6 +8,7 @@ namespace SUShirts.Data
         public DbSet<Color> Colors { get; set; }
         public DbSet<Shirt> Shirts { get; set; }
         public DbSet<Reservation> Reservations { get; set; }
+        public DbSet<ShirtVariant> ShirtVariants { get; set; }
 
         public AppDbContext() : base()
         {
@@ -23,6 +24,8 @@ namespace SUShirts.Data
                 .HasMany(s => s.Variants)
                 .WithOne(sv => sv.Shirt)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ShirtVariant>();
 
             modelBuilder.Entity<Reservation>()
                 .HasMany(r => r.Items)
