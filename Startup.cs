@@ -42,6 +42,7 @@ namespace SUShirts
 
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<ShopFacade>();
+            services.AddScoped<ReservationsFacade>();
 
             services.AddRazorPages()
                 .AddRazorRuntimeCompilation();

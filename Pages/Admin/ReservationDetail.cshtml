@@ -1,4 +1,95 @@
 @page "/Admin/Reservations/{id:int}"
+@using SUShirts.Data.Enums
 @model SUShirts.Pages.Admin.ReservationDetail
 
-<h2>Rezervace #@Model.Id</h2>
+<h2>Rezervace #@Model.Reservation.Id – <span class="@(Model.Reservation.Handled ? "text-success" : "text-danger")">@(Model.Reservation.Handled ? "vyřízená" : "nevyřízená")</span></h2>
+
+@if (Model.ErrorMessage is not null)
+{
+    <div class="alert alert-danger" role="alert">
+        @Model.ErrorMessage
+    </div>
+}
+
+<p>
+    Jméno: @Model.Reservation.Name<br>
+    E-mail: <a href="mailto:@Model.Reservation.Email">@Model.Reservation.Email</a><br>
+    Telefon/Discord: @(Model.Reservation.PhoneOrDiscordTag ?? "neuveden")<br>
+    @if (Model.Reservation.Handled)
+    {
+        @:Vyřízeno: @Model.Reservation.HandledBy 
+        @if (Model.Reservation.HandledOn.HasValue)
+        {
+            @:(@Model.Reservation.HandledOn.Value.ToString("dd. MM. yyyy, HH:mm"))
+        }
+    }
+</p>
+
+@if (!string.IsNullOrEmpty(Model.Reservation.Note))
+{
+    <h5>Poznámka</h5>
+    <p>
+        @Html.Raw(Model.Reservation.Note.Replace("\n", "<br>"))
+    </p>
+}
+
+<table class="table mb-4">
+    <thead>
+    <tr>
+        <th scope="col">Název</th>
+        <th scope="col">Velikost</th>
+        <th scope="col">Střih</th>
+        <th scope="col">Cena</th>
+        <th scope="col">
+            @if (Model.Reservation.Handled)
+            {
+                @:Vydaných kusů 
+            }
+            else
+            {
+                @:Požadovaných kusů 
+            }
+        </th>
+        <th scope="col">Kusů na skladě</th>
+        <th scope="col">Kusů k dispozici</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.Reservation.Items.OrderBy(ri => ri.ShirtSex).ThenBy(ri => ri.ShirtName).ThenBy(ri => ri.ShirtSize))
+    {
+        <tr>
+            <th scope="row">@item.ShirtName</th>
+            <td>@item.ShirtSize.ToString()</td>
+            <td>@(item.ShirtSex switch { SexVariant.Man => "pánský", SexVariant.Woman => "dámský", SexVariant.Unisex => "uni", _ => "?"})</td>
+            <td>@item.Price Kč</td>
+            <td>
+                @item.Count&nbsp;
+                @if (!Model.Reservation.Handled)
+                {
+                    if (item.Count > 0)
+                    {
+                        <a asp-page-handler="RemoveItem" asp-route-variantId="@item.ShirtVariantId" class="btn btn-outline-secondary">
+                            <i class="fa fa-minus"></i>
+                        </a>
+                    }
+
+                    if (item.LeftForReserving > 0)
+                    {
+                        <a asp-page-handler="AddItem" asp-route-variantId="@item.ShirtVariantId" class="btn btn-outline-secondary">
+                            <i class="fa fa-plus"></i>
+                        </a>
+                    }
+                }
+            </td>
+            <td>@item.InStock</td>
+            <td>@item.LeftForReserving</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@if (!Model.Reservation.Handled)
+{
+    <a asp-page-handler="Finish" class="btn btn-primary">Označit jako vyřízenou</a>
+    <div class="form-text">Označením za vyřízenou stvrzuji, že jsem přebral peníze a vydal jsem trička (případně že peníze došly na účet a domluvil jsem se na jeho předání).</div>
+}

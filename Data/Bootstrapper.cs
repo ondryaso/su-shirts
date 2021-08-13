@@ -347,9 +347,10 @@ namespace SUShirts.Data
                 foreach (var shirtVariant in shirt.Variants)
                 {
                     shirtVariant.Price = 200;
+                    shirtVariant.ItemsInStock = shirtVariant.ItemsLeft;
                 }
             }
-            
+
             dbContext.Colors.AddRange(colors);
             dbContext.Shirts.AddRange(shirts);
             dbContext.SaveChanges();

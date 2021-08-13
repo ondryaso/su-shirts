@@ -14,6 +14,7 @@ namespace SUShirts.Data.Entities
         [Required] public SexVariant Sex { get; set; }
         [Required] public SizeVariant Size { get; set; }
         [Required] [ConcurrencyCheck] public int ItemsLeft { get; set; }
+        [Required] [ConcurrencyCheck] public int ItemsInStock { get; set; }
         [Required] public int Price { get; set; }
     }
 }

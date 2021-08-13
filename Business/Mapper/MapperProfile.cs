@@ -20,6 +20,27 @@ namespace SUShirts.Business.Mapper
                 .ForMember(s => s.WillBeRequested, options =>
                     options.Ignore())
                 .IncludeMembers(s => s.Shirt);
+
+            this.CreateMap<Shirt, ReservationItemDto>()
+                .ForMember(ri => ri.ShirtId, options =>
+                    options.MapFrom(s => s.Id))
+                .ForMember(ri => ri.ShirtName, options =>
+                    options.MapFrom(s => s.Name));
+            this.CreateMap<ShirtVariant, ReservationItemDto>()
+                .ForMember(ri => ri.ShirtSex, options =>
+                    options.MapFrom(sv => sv.Sex))
+                .ForMember(ri => ri.ShirtSize, options =>
+                    options.MapFrom(sv => sv.Size))
+                .ForMember(ri => ri.ShirtVariantId, options =>
+                    options.MapFrom(sv => sv.Id))
+                .ForMember(ri => ri.InStock, options =>
+                    options.MapFrom(sv => sv.ItemsInStock))
+                .ForMember(ri => ri.LeftForReserving, options =>
+                    options.MapFrom(sv => sv.ItemsLeft));
+            this.CreateMap<ReservationItem, ReservationItemDto>()
+                .IncludeMembers(s => s.Reservation)
+                .IncludeMembers(s => s.ShirtVariant);
+            this.CreateMap<Reservation, ReservationDto>();
         }
     }
 }

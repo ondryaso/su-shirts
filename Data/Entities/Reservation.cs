@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -19,5 +20,8 @@ namespace SUShirts.Data.Entities
         [StringLength(128)] public string HandledBy { get; set; }
 
         [StringLength(512)] public string Note { get; set; }
+
+        [Required] public DateTime MadeOn { get; set; }
+        public DateTime? HandledOn { get; set; }
     }
 }

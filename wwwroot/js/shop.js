@@ -13,11 +13,11 @@ function updateCart() {
         }
     });
 
-    $("#cart-text").text(total);
+    $(".cart-text").text(total);
     if (total > 0) {
-        $("#cart-btn").removeClass("disabled");
+        $(".cart-btn").removeClass("disabled");
     } else {
-        $("#cart-btn").addClass("disabled");
+        $(".cart-btn").addClass("disabled");
     }
 
     return total;
@@ -99,7 +99,7 @@ $(function () {
         updateItem(item, null);
     });
 
-    $("#cart-btn").on("click", function () {
+    $(".cart-btn").on("click", function () {
         const items = updateCart();
         if (items > 0) {
             setCookie();

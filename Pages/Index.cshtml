@@ -7,11 +7,15 @@
 <h2 id="panska">Pánská</h2>
 <partial name="Partials/_ShirtListPartial" model="Model.ManShirts"/>
 
+<div class="col-md-12 text-center mb-4">
+    <button class="btn btn-outline-primary cart-btn">Přejít do košíku</button>
+</div>
+
 @section Scripts
 {
     <script>
         const makeReservationUrl = "@Url.Page("MakeReservation")";
     </script>
-    
+
     <script src="~/js/shop.js"></script>
 }
