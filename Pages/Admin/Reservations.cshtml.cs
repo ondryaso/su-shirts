@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using SUShirts.Business.Dto;
 using SUShirts.Business.Facades;
+using SUShirts.Data.Extensions;
 
 namespace SUShirts.Pages.Admin
 {
@@ -21,8 +22,8 @@ namespace SUShirts.Pages.Admin
         public async Task OnGet()
         {
             var dtos = await _facade.GetAll();
-            this.PendingReservations = dtos.FindAll(r => !r.Handled);
-            this.FinishedReservations = dtos.FindAll(r => r.Handled);
+            this.PendingReservations = dtos.FindAll(r => !r.State.IsClosed());
+            this.FinishedReservations = dtos.FindAll(r => r.State.IsClosed());
         }
     }
 }

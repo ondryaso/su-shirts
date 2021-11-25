@@ -56,7 +56,6 @@ namespace SUShirts.Business.Services
 </ul>
 <p>
     Brzy tě bude kontaktovat někdo z SU a domluvíte se spolu na způsobu platby a&nbsp;předání.
-    Předběžně počítej s&nbsp;tím, že předání proběhne na nejbližší otvíračce v&nbsp;Kachně.
 </p>
 <p>
     Připrav si celkem <span class=""bold"">{2} Kč</span>. Pokud jsi členem SU (pokud jsi zaregistrovaný/á v&nbsp;Kachně, jsi sympatizujícím členem SU), po dohodě budeš moci zaplatit i&nbsp;převodem na účet.
@@ -183,8 +182,8 @@ namespace SUShirts.Business.Services
         {
             var options = _messageOptions.CurrentValue;
             return !string.IsNullOrEmpty(options.SmtpServer) &&
-                   !string.IsNullOrEmpty(options.SmtpUsername) &&
-                   !string.IsNullOrEmpty(options.SmtpPassword) &&
+                   //!string.IsNullOrEmpty(options.SmtpUsername) &&
+                   //!string.IsNullOrEmpty(options.SmtpPassword) &&
                    !string.IsNullOrEmpty(options.FromAddress) &&
                    MailAddress.TryCreate(options.FromAddress, out _) &&
                    (options.SmtpPort is > 0 and <= 65535);
@@ -193,11 +192,17 @@ namespace SUShirts.Business.Services
         private SmtpClient MakeSmtpClient()
         {
             var options = _messageOptions.CurrentValue;
-            return new SmtpClient(options.SmtpServer, options.SmtpPort)
+            var client = new SmtpClient(options.SmtpServer, options.SmtpPort)
             {
-                EnableSsl = options.UseSsl,
-                Credentials = new NetworkCredential(options.SmtpUsername, options.SmtpPassword),
+                EnableSsl = options.UseSsl
             };
+
+            if (!string.IsNullOrEmpty(options.SmtpUsername) && !string.IsNullOrEmpty(options.SmtpPassword))
+            {
+                client.Credentials = new NetworkCredential(options.SmtpUsername, options.SmtpPassword);
+            }
+
+            return client;
         }
     }
 }

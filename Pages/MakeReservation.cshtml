@@ -3,35 +3,37 @@
 
 <h2>Zarezervovat trička</h2>
 
-<table class="table mb-4">
-    <thead>
-    <tr>
-        <th scope="col">Název</th>
-        <th scope="col">Velikost</th>
-        <th scope="col">Cena</th>
-        <th scope="col">Požadovaných kusů</th>
-        <th scope="col">Kusů skladem</th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in Model.Items)
-    {
-        <tr class="@(item.WillBeRequested ? "" : "table-danger")">
-            <th scope="row">@item.ShirtName</th>
-            <td>@item.Size.ToString()</td>
-            <td>@item.Price Kč</td>
-            <td>
-                @item.RequestedCount
-                @if (!item.WillBeRequested)
-                {
-                    <i class="fa fa-warning" title="Této položky je skladem menší množství kusů, nebude zahrnuta do rezervace!" data-bs-toggle="tooltip"></i>
-                }
-            </td>
-            <td>@item.ItemsLeft</td>
+<div class="table-responsive">
+    <table class="table mb-4">
+        <thead>
+        <tr>
+            <th scope="col">Název</th>
+            <th scope="col">Velikost</th>
+            <th scope="col">Cena</th>
+            <th scope="col">Požadovaných kusů</th>
+            <th scope="col">Kusů skladem</th>
         </tr>
-    }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.Items)
+        {
+            <tr class="@(item.WillBeRequested ? "" : "table-danger")">
+                <th scope="row">@item.ShirtName</th>
+                <td>@item.Size.ToString()</td>
+                <td>@item.Price Kč</td>
+                <td>
+                    @item.RequestedCount
+                    @if (!item.WillBeRequested)
+                    {
+                        <i class="fa fa-warning" title="Této položky je skladem menší množství kusů, nebude zahrnuta do rezervace!" data-bs-toggle="tooltip"></i>
+                    }
+                </td>
+                <td>@item.ItemsLeft</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
 
 <h4>Rezervační formulář</h4>
 <div class="col-md-6 mt-2">
@@ -55,14 +57,16 @@
             <input type="checkbox" class="form-check-input" asp-for="Reservation.IsClubMember">
             <label class="form-check-label" asp-for="Reservation.IsClubMember">Jsem zaregistrovaný v Kachně</label>
             <div class="form-text">(jsem sympatizujícím nebo jiným členem SU)</div>
-
         </div>
         <div class="mb-3">
             <label asp-for="Reservation.Note" class="form-label">Poznámka</label>
-            <textarea class="form-control" asp-for="Reservation.Note"></textarea>
+            <textarea class="form-control" asp-for="Reservation.Note" placeholder="chci předat tričko na PPV, můžu si tričko vyzvednout v úterý a v pátek na FITu…"></textarea>
             <span asp-validation-for="Reservation.Note" class="text-danger"></span>
         </div>
         <button type="submit" class="btn btn-primary">Odeslat rezervaci</button>
+        <div class="form-text">
+            Rezervace je nezávazná. Trička si můžeš při předání vyzkoušet a třeba si vzít jinou velikost. Po odeslání tě bude kontaktovat člen SU, se kterým se domluvíš na platbě a předání.
+        </div>
     </form>
 </div>
 

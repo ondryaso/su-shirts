@@ -78,6 +78,12 @@ function updateItem(item, delta) {
     updateCart();
 }
 
+function leoPlsFix() {
+    document.cookie = "cart= ; expires = Thu, 01 Jan 1970 00:00:00 GMT";
+    localStorage.clear();
+    location.reload();
+}
+
 $(function () {
     $(".minus-btn").on("click", function () {
         const item = $(this).closest(".shirt-item");

@@ -54,6 +54,7 @@ namespace SUShirts.Business.Facades
         {
             var shirts = await _dbContext.Shirts
                 .Include(s => s.Variants)
+                .Where(s => !s.Hidden)
                 .Where(s => s.Variants.Any(v => v.ItemsLeft > 0))
                 .OrderBy(s => s.Name)
                 .ToListAsync();
@@ -105,7 +106,14 @@ namespace SUShirts.Business.Facades
                 return null;
             }
 
-            var keys = cartObject.Keys.Select(k => int.Parse(k)).ToList();
+            var keys = new List<int>();
+            foreach (var keyString in cartObject.Keys)
+            {
+                if (int.TryParse(keyString, out var k))
+                {
+                    keys.Add(k);
+                }
+            }
 
             var variantEntitiesQuery = _dbContext.ShirtVariants
                 .Where(sv => keys.Contains(sv.Id))
@@ -116,8 +124,10 @@ namespace SUShirts.Business.Facades
 
             foreach (var cartItem in cartObject)
             {
-                var id = int.Parse(cartItem.Key);
-                var count = int.Parse(cartItem.Value);
+                if (!(int.TryParse(cartItem.Key, out var id) && int.TryParse(cartItem.Value, out var count)))
+                {
+                    continue;
+                }
 
                 var dto = variantEntitiesDto.Find(v => v.Id == id);
 
@@ -153,8 +163,8 @@ namespace SUShirts.Business.Facades
             {
                 Name = model.Name,
                 Email = model.Email,
-                Note = HttpUtility.HtmlEncode(model.Note +
-                                              (model.IsClubMember ? "\nRezervující je sympatizujícím členem SU." : "")
+                Note = HttpUtility.HtmlEncode((model.Note +
+                                              (model.IsClubMember ? "\nRezervující je sympatizujícím členem SU." : ""))
                                               .Trim()),
                 PhoneOrDiscordTag = model.PhoneOrDiscordTag,
                 Items = items,
@@ -216,7 +226,7 @@ namespace SUShirts.Business.Facades
             }
 
             var msg =
-                $"Nová rezervace triček – {reservation.Name}, {reservation.Items.Sum(i => i.Count)} ks. Odkaz na rezervaci: {reservationUrl}"
+                $"Nová rezervace triček – {reservation.Name}, {reservation.Items.Sum(i => i.Count)} ks. Odkaz na rezervaci: <{reservationUrl}>"
                     .Replace("\"", "\\\"");
             var jsonMsg = $"{{ \"content\": \"{msg}\" }}";
 

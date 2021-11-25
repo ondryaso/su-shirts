@@ -9,6 +9,22 @@ namespace SUShirts.Pages.Admin
 {
     public class ReservationDetail : PageModel
     {
+        public class InternalInfoModel
+        {
+            public string Note { get; set; }
+            public string AssignedTo { get; set; }
+
+            public InternalInfoModel()
+            {
+            }
+
+            public InternalInfoModel(ReservationDto reservationDto)
+            {
+                this.Note = reservationDto.InternalNote;
+                this.AssignedTo = reservationDto.AssignedTo;
+            }
+        }
+
         private readonly ReservationsFacade _facade;
         public ReservationDto Reservation { get; set; }
 
@@ -16,6 +32,8 @@ namespace SUShirts.Pages.Admin
         public int Id { get; set; }
 
         [TempData] public string ErrorMessage { get; set; }
+
+        [BindProperty] public InternalInfoModel InternalInfo { get; set; }
 
         public ReservationDetail(ReservationsFacade facade)
         {
@@ -31,7 +49,20 @@ namespace SUShirts.Pages.Admin
             }
 
             this.Reservation = dto;
+            this.InternalInfo = new InternalInfoModel(dto);
+
             return this.Page();
+        }
+
+        public async Task<IActionResult> OnPostSetInternalInfo()
+        {
+            var result = await _facade.SetInternalInfo(this.Id, this.InternalInfo.AssignedTo, this.InternalInfo.Note);
+            if (!result)
+            {
+                this.ErrorMessage = "Při ukládání změny se vyskytla chyba. Zkus to znovu.";
+            }
+
+            return this.RedirectToPage();
         }
 
         public async Task<IActionResult> OnGetAddItem(int variantId)

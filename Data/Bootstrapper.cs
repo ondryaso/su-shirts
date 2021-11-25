@@ -22,8 +22,8 @@ namespace SUShirts.Data
 
             var colorHexes = new[]
             {
-                "729ab3", "1a2875", "f06723", "e14a21", "525252", "00ff00", "ffffff", "000000", "fdc942",
-                "000000", "c9112b", "893e99", "000000"
+                "729ab3", "1a2875", "f06723", "e14a21", "525252", "00ff00", "ffffff", "000000", "dcc521",
+                "1f332f", "c9112b", "893e99", "000000"
             };
 
             var colors = new List<Color>();
@@ -39,6 +39,7 @@ namespace SUShirts.Data
                     Name = "FIT oranžové",
                     PrimaryColor = colors[2],
                     SecondaryColor = colors[7],
+                    ImageUrl = "sv_oranzove.jpg",
                     Variants = new List<ShirtVariant>()
                     {
                         new()
@@ -72,6 +73,7 @@ namespace SUShirts.Data
                     Name = "FIT šedé",
                     PrimaryColor = colors[4],
                     SecondaryColor = colors[6],
+                    ImageUrl = "sede.jpg",
                     Variants = new List<ShirtVariant>()
                     {
                         new()
@@ -105,6 +107,7 @@ namespace SUShirts.Data
                     Name = "FIT šedé (zelený text)",
                     PrimaryColor = colors[4],
                     SecondaryColor = colors[5],
+                    ImageUrl = "sede_zelene.jpg",
                     Variants = new List<ShirtVariant>()
                     {
                         new()
@@ -120,11 +123,12 @@ namespace SUShirts.Data
                     Name = "FIT bílé",
                     PrimaryColor = colors[6],
                     SecondaryColor = colors[7],
+                    ImageUrl = "bile.jpg",
                     Variants = new List<ShirtVariant>()
                     {
                         new()
                         {
-                            Sex = SexVariant.Unisex,
+                            Sex = SexVariant.Man,
                             Size = SizeVariant.XXL,
                             ItemsLeft = 3
                         }
@@ -135,14 +139,9 @@ namespace SUShirts.Data
                     Name = "FIT modré",
                     PrimaryColor = colors[0],
                     SecondaryColor = colors[7],
+                    ImageUrl = "sv_modre_d.jpg",
                     Variants = new List<ShirtVariant>()
                     {
-                        new()
-                        {
-                            Sex = SexVariant.Man,
-                            Size = SizeVariant.XXL,
-                            ItemsLeft = 8
-                        },
                         new()
                         {
                             Sex = SexVariant.Woman,
@@ -165,9 +164,26 @@ namespace SUShirts.Data
                 },
                 new Shirt()
                 {
+                    Name = "FIT modré",
+                    PrimaryColor = colors[0],
+                    SecondaryColor = colors[7],
+                    ImageUrl = "sv_modre_p.jpg",
+                    Variants = new List<ShirtVariant>()
+                    {
+                        new()
+                        {
+                            Sex = SexVariant.Man,
+                            Size = SizeVariant.XXL,
+                            ItemsLeft = 8
+                        }
+                    }
+                },
+                new Shirt()
+                {
                     Name = "FIT žluté",
                     PrimaryColor = colors[8],
                     SecondaryColor = colors[7],
+                    ImageUrl = "zlute.jpg",
                     Variants = new List<ShirtVariant>()
                     {
                         new()
@@ -201,11 +217,12 @@ namespace SUShirts.Data
                     Name = "FIT tmavě zelené",
                     PrimaryColor = colors[9],
                     SecondaryColor = colors[6],
+                    ImageUrl = "tm_zelene.jpg",
                     Variants = new List<ShirtVariant>()
                     {
                         new()
                         {
-                            Sex = SexVariant.Unisex,
+                            Sex = SexVariant.Man,
                             Size = SizeVariant.XXL,
                             ItemsLeft = 9
                         }
@@ -213,9 +230,10 @@ namespace SUShirts.Data
                 },
                 new Shirt()
                 {
-                    Name = "FIT červené (s bílým textem)",
+                    Name = "FIT červené (bílý text)",
                     PrimaryColor = colors[10],
                     SecondaryColor = colors[6],
+                    ImageUrl = "cervene_bile.jpg",
                     Variants = new List<ShirtVariant>()
                     {
                         new()
@@ -249,6 +267,7 @@ namespace SUShirts.Data
                     Name = "FIT fialové",
                     PrimaryColor = colors[11],
                     SecondaryColor = colors[6],
+                    ImageUrl = "fialove.jpg",
                     Variants = new List<ShirtVariant>()
                     {
                         new()
@@ -273,9 +292,10 @@ namespace SUShirts.Data
                 },
                 new Shirt()
                 {
-                    Name = "FIT červené (s černým textem)",
+                    Name = "FIT červené (černý text)",
                     PrimaryColor = colors[10],
                     SecondaryColor = colors[7],
+                    ImageUrl = "cervene_cerne.jpg",
                     Variants = new List<ShirtVariant>()
                     {
                         new()
@@ -309,6 +329,7 @@ namespace SUShirts.Data
                     Name = "FIT tmavě oranžové",
                     PrimaryColor = colors[3],
                     SecondaryColor = colors[6],
+                    ImageUrl = "tm_oranzove.jpg",
                     Variants = new List<ShirtVariant>()
                     {
                         new()
@@ -324,6 +345,7 @@ namespace SUShirts.Data
                     Name = "Kachna",
                     PrimaryColor = colors[1],
                     SecondaryColor = colors[12],
+                    ImageUrl = "kachna.jpg",
                     Variants = new List<ShirtVariant>()
                     {
                         new()

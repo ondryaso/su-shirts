@@ -1,3 +1,4 @@
+@using SUShirts.Data.Extensions
 @model List<SUShirts.Business.Dto.ReservationDto>
 
 @if (Model is null or {Count:0})
@@ -14,10 +15,16 @@ else
                 <th scope="col">Vytvořeno</th>
                 <th scope="col">Celkem kusů</th>
                 <th scope="col">Cena celkem</th>
-                @if (Model[0].Handled)
+                @if (Model[0].State.IsClosed())
                 {
                     <th scope="col">
                         Vyřízeno
+                    </th>
+                }
+                else
+                {
+                    <th scope="col">
+                        Vyřizuje
                     </th>
                 }
                 <th scope="col"></th>
@@ -31,9 +38,13 @@ else
                     <td>@item.MadeOn.ToString("dd. MM. yyyy HH:mm")</td>
                     <td>@item.Items.Select(i => i.Count).Sum()</td>
                     <td>@item.Items.Select(i => i.Price * i.Count).Sum() Kč</td>
-                    @if (item.Handled)
+                    @if (item.State.IsClosed())
                     {
                         <td>@item.HandledOn!.Value.ToString("dd. MM. yyyy HH:mm") (@item.HandledBy)</td>
+                    }
+                    else
+                    {
+                        <td class="@(item.AssignedTo is null ? "text-danger" : "")">@(item.AssignedTo ?? "zatím nikdo")</td>
                     }
                     <td>
                         <a asp-page="ReservationDetail" asp-route-Id="@item.Id" class="btn btn-outline-primary">Detail</a>

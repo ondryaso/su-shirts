@@ -8,6 +8,8 @@ using Microsoft.Extensions.Logging;
 using SUShirts.Business.Dto;
 using SUShirts.Data;
 using SUShirts.Data.Entities;
+using SUShirts.Data.Enums;
+using SUShirts.Data.Extensions;
 
 namespace SUShirts.Business.Facades
 {
@@ -54,7 +56,7 @@ namespace SUShirts.Business.Facades
                 .ThenInclude(ri => ri.ShirtVariant)
                 .FirstOrDefaultAsync();
 
-            if (reservation.Handled)
+            if (reservation.State.IsClosed())
             {
                 return false;
             }
@@ -70,7 +72,7 @@ namespace SUShirts.Business.Facades
                 }
             }
 
-            reservation.Handled = true;
+            reservation.State = ReservationState.Finished;
             reservation.HandledBy = handledBy;
             reservation.HandledOn = DateTime.Now;
 
@@ -87,6 +89,36 @@ namespace SUShirts.Business.Facades
             return true;
         }
 
+        public async Task<bool> SetInternalInfo(int reservationId, string assignedTo, string internalNote)
+        {
+            var reservation = await _dbContext.Reservations
+                .Where(r => r.Id == reservationId)
+                .Include(r => r.Items)
+                .ThenInclude(ri => ri.ShirtVariant)
+                .FirstOrDefaultAsync();
+
+            if (reservation.State.IsClosed())
+            {
+                return false;
+            }
+
+            reservation.State = string.IsNullOrEmpty(assignedTo) ? ReservationState.New : ReservationState.Assigned;
+            reservation.AssignedTo = assignedTo;
+            reservation.InternalNote = internalNote;
+
+            try
+            {
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Cannot change state of reservation {Id}.", reservationId);
+                return false;
+            }
+
+            return true;
+        }
+
         public async Task<bool> Cancel(int reservationId, string handledBy)
         {
             var reservation = await _dbContext.Reservations
@@ -95,7 +127,7 @@ namespace SUShirts.Business.Facades
                 .ThenInclude(ri => ri.ShirtVariant)
                 .FirstOrDefaultAsync();
 
-            if (reservation.Handled)
+            if (reservation.State.IsClosed())
             {
                 return false;
             }
@@ -115,7 +147,7 @@ namespace SUShirts.Business.Facades
                 }
             }
 
-            reservation.Handled = true;
+            reservation.State = ReservationState.Cancelled;
             reservation.HandledBy = handledBy;
             reservation.HandledOn = DateTime.Now;
 
@@ -194,7 +226,7 @@ namespace SUShirts.Business.Facades
         private async Task<ReservationItem> GetReservationItem(int reservationId, int variantId)
         {
             var reservation = await _dbContext.Reservations
-                .Where(r => r.Id == reservationId && !r.Handled)
+                .Where(r => r.Id == reservationId && !r.State.IsClosed())
                 .Include(r => r.Items)
                 .ThenInclude(ri => ri.ShirtVariant)
                 .FirstOrDefaultAsync(r => r.Items.Any(ri => ri.ShirtVariantId == variantId));

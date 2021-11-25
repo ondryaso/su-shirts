@@ -8,11 +8,13 @@ using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using SUShirts.Business.Facades;
 using SUShirts.Business.Mapper;
 using SUShirts.Business.Services;
@@ -51,13 +53,19 @@ namespace SUShirts
                     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                     options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
                 })
-                .AddCookie()
+                .AddCookie(options =>
+                {
+                    options.Cookie.HttpOnly = true;
+                    options.Cookie.SameSite = SameSiteMode.None;
+                    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                })
                 .AddGoogle(options =>
                 {
                     var configSection = _configuration.GetSection("Google");
 
                     options.ClientId = configSection["ClientId"];
                     options.ClientSecret = configSection["ClientSecret"];
+                    options.CorrelationCookie.SecurePolicy = CookieSecurePolicy.Always;
                 });
 
             services.AddRazorPages(options => { options.Conventions.AuthorizeFolder("/Admin"); })
@@ -69,11 +77,20 @@ namespace SUShirts
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseHttpsRedirection();
+            }
+            else
+            {
+                app.UseForwardedHeaders(new ForwardedHeadersOptions()
+                {
+                    ForwardedHeaders = ForwardedHeaders.All
+                });
+                app.UsePathBase("/tricka");
             }
 
+            dbContext.Database.Migrate();
             Bootstrapper.BootstrapDatabase(dbContext);
 
-            app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRequestLocalization();

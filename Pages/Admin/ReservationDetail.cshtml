@@ -1,8 +1,24 @@
 @page "/Admin/Reservations/{id:int}"
 @using SUShirts.Data.Enums
+@using SUShirts.Data.Extensions
 @model SUShirts.Pages.Admin.ReservationDetail
 
-<h2>Rezervace #@Model.Reservation.Id – <span class="@(Model.Reservation.Handled ? "text-success" : "text-danger")">@(Model.Reservation.Handled ? "vyřízená" : "nevyřízená")</span></h2>
+<h2>
+    Rezervace #@Model.Reservation.Id –
+    <span class="@(Model.Reservation.State switch { 
+                     ReservationState.New => "text-danger",
+                     ReservationState.Assigned => "text-warning",
+                     ReservationState.Finished => "text-success",
+                     ReservationState.Cancelled => "text-success",
+                     _ => throw new ArgumentOutOfRangeException()})">
+        @(Model.Reservation.State switch {
+            ReservationState.New => "nevyřízená",
+            ReservationState.Assigned => "přiřazená",
+            ReservationState.Finished => "vyřízená",
+            ReservationState.Cancelled => "zrušená",
+            _ => throw new ArgumentOutOfRangeException()})
+    </span>
+</h2>
 
 @if (Model.ErrorMessage is not null)
 {
@@ -15,19 +31,11 @@
     Jméno: @Model.Reservation.Name<br>
     E-mail: <a href="mailto:@Model.Reservation.Email">@Model.Reservation.Email</a><br>
     Telefon/Discord: @(Model.Reservation.PhoneOrDiscordTag ?? "neuveden")<br>
-    @if (Model.Reservation.Handled)
-    {
-        @:Vyřízeno: @Model.Reservation.HandledBy 
-        @if (Model.Reservation.HandledOn.HasValue)
-        {
-            @:(@Model.Reservation.HandledOn.Value.ToString("dd. MM. yyyy, HH:mm"))
-        }
-    }
 </p>
 
 @if (!string.IsNullOrEmpty(Model.Reservation.Note))
 {
-    <h5>Poznámka</h5>
+    <h5>Poznámka rezervujícího</h5>
     <p>
         @Html.Raw(Model.Reservation.Note.Replace("\n", "<br>"))
     </p>
@@ -41,7 +49,7 @@
         <th scope="col">Střih</th>
         <th scope="col">Cena</th>
         <th scope="col">
-            @if (Model.Reservation.Handled)
+            @if (Model.Reservation.State.IsClosed())
             {
                 @:Vydaných kusů 
             }
@@ -64,7 +72,7 @@
             <td>@item.Price Kč</td>
             <td>
                 @item.Count&nbsp;
-                @if (!Model.Reservation.Handled)
+                @if (!Model.Reservation.State.IsClosed())
                 {
                     if (item.Count > 0)
                     {
@@ -88,7 +96,40 @@
     </tbody>
 </table>
 
-@if (!Model.Reservation.Handled)
+<h5>Interní informace</h5>
+@if (Model.Reservation.State.IsClosed())
+{
+    <p>
+        Vyřizoval (přiřazený člověk): @Model.InternalInfo.AssignedTo<br>
+        Vyřídil (potvrdil/zrušil): @Model.Reservation.HandledBy (@Model.Reservation.HandledOn!.Value.ToString("dd. MM. yyyy HH:mm"))
+    </p>
+
+    if (!string.IsNullOrEmpty(Model.InternalInfo.Note))
+    {
+        <h6>Poznámka</h6>
+        <p>
+            @Html.Raw(Model.InternalInfo.Note.Replace("\n", "<br>"))
+        </p>
+    }
+}
+else
+{
+    <form method="post" asp-page-handler="SetInternalInfo">
+        <div class="mb-3">
+            <label asp-for="InternalInfo.AssignedTo" class="form-label">Vyřizuje</label>
+            <input type="text" class="form-control" asp-for="InternalInfo.AssignedTo">
+            <span asp-validation-for="InternalInfo.AssignedTo" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="InternalInfo.Note" class="form-label">Interní poznámka</label>
+            <textarea class="form-control" style="height: 6em;" asp-for="InternalInfo.Note" placeholder="předám mu to příští týden…"></textarea>
+            <span asp-validation-for="Reservation.Note" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-outline-secondary mb-4">Uložit</button>
+    </form>
+}
+
+@if (!Model.Reservation.State.IsClosed())
 {
     <a asp-page-handler="Finish" class="btn btn-primary">Označit jako vyřízenou</a>
     <a asp-page-handler="Cancel" class="btn btn-outline-danger">Zrušit</a>
